@@ -1,13 +1,13 @@
 package com.googlecode.objectify.insight.example;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.extensions.appengine.auth.oauth2.AppIdentityCredential;
+import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
+import com.google.api.services.bigquery.BigqueryScopes;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.utils.SystemProperty;
@@ -25,8 +25,7 @@ import com.googlecode.objectify.insight.servlet.GuiceTableMakerServlet;
 import lombok.extern.slf4j.Slf4j;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.Collections;
 
 /**
  */
@@ -52,26 +51,31 @@ public class GuiceListener extends GuiceServletContextListener {
 		}
 
 		@Provides
-		public Bigquery bigquery(Credential credential) {
+		public Bigquery bigquery(HttpRequestInitializer credential) {
 			return new Bigquery.Builder(TRANSPORT, JSON_FACTORY, credential)
 					.setApplicationName(SystemProperty.applicationId.get())
 					.build();
 		}
 
-		@Provides
-		public GoogleClientSecrets googleClientSecrets() throws IOException {
-			return GoogleClientSecrets.load(
-					new JacksonFactory(),
-					new InputStreamReader(this.getClass().getResourceAsStream(CLIENTSECRETS_LOCATION)));
-		}
+//		@Provides
+//		public GoogleClientSecrets googleClientSecrets() throws IOException {
+//			return GoogleClientSecrets.load(
+//					new JacksonFactory(),
+//					new InputStreamReader(this.getClass().getResourceAsStream(CLIENTSECRETS_LOCATION)));
+//		}
+//
+//		@Provides
+//		public AppIdentityCredential credential(GoogleClientSecrets googleClientSecrets) {
+//			return new GoogleCredential.Builder()
+//					.setTransport(TRANSPORT)
+//					.setJsonFactory(JSON_FACTORY)
+//					.setClientSecrets(googleClientSecrets)
+//					.build();
+//		}
 
 		@Provides
-		public Credential credential(GoogleClientSecrets googleClientSecrets) {
-			return new GoogleCredential.Builder()
-					.setTransport(TRANSPORT)
-					.setJsonFactory(JSON_FACTORY)
-					.setClientSecrets(googleClientSecrets)
-					.build();
+		public HttpRequestInitializer credential() {
+			return new AppIdentityCredential(Collections.singleton(BigqueryScopes.BIGQUERY));
 		}
 
 		@Provides

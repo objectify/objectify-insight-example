@@ -16,6 +16,6 @@ public class ExampleInsightDataset implements InsightDataset {
 	/** The dataset to which we will write our query results */
 	@Override
 	public String datasetId() {
-		return "insight-example";
+		return "insight_example";
 	}
 }
