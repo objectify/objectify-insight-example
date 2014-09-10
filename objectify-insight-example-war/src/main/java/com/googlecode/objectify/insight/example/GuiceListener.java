@@ -20,6 +20,8 @@ import com.google.inject.servlet.ServletModule;
 import com.googlecode.objectify.ObjectifyFilter;
 import com.googlecode.objectify.insight.Flusher;
 import com.googlecode.objectify.insight.puller.InsightDataset;
+import com.googlecode.objectify.insight.servlet.GuicePullerServlet;
+import com.googlecode.objectify.insight.servlet.GuiceTableMakerServlet;
 import lombok.extern.slf4j.Slf4j;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -87,6 +89,9 @@ public class GuiceListener extends GuiceServletContextListener {
 			filter("/*").through(ObjectifyFilter.class);
 
 			serve("/go").with(GoServlet.class);
+
+			serve("/tableMaker").with(GuiceTableMakerServlet.class);
+			serve("/puller").with(GuicePullerServlet.class);
 		}
 	}
 
