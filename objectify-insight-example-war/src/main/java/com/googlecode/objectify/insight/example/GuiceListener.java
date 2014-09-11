@@ -1,5 +1,6 @@
 package com.googlecode.objectify.insight.example;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.extensions.appengine.auth.oauth2.AppIdentityCredential;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
@@ -11,6 +12,7 @@ import com.google.api.services.bigquery.BigqueryScopes;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.utils.SystemProperty;
+import com.google.appengine.api.utils.SystemProperty.Environment.Value;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -25,6 +27,10 @@ import com.googlecode.objectify.insight.servlet.GuiceTableMakerServlet;
 import lombok.extern.slf4j.Slf4j;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import javax.servlet.ServletContext;
+import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 /**
@@ -33,7 +39,7 @@ import java.util.Collections;
 public class GuiceListener extends GuiceServletContextListener {
 
 	/** */
-	private static final String CLIENTSECRETS_LOCATION = "/client_secret.json";
+	private static final String P12_LOCATION = "WEB-INF/privatekey.p12";
 	private static final JsonFactory JSON_FACTORY = new JacksonFactory();
 	private static final HttpTransport TRANSPORT = new NetHttpTransport();
 
@@ -74,8 +80,19 @@ public class GuiceListener extends GuiceServletContextListener {
 //		}
 
 		@Provides
-		public HttpRequestInitializer credential() {
-			return new AppIdentityCredential(Collections.singleton(BigqueryScopes.BIGQUERY));
+		public HttpRequestInitializer credential(ServletContext ctx) throws GeneralSecurityException, IOException {
+			if (SystemProperty.environment.value() == Value.Production) {
+				return new AppIdentityCredential(Collections.singleton(BigqueryScopes.BIGQUERY));
+			} else {
+				String path = ctx.getRealPath(P12_LOCATION);
+				return new GoogleCredential.Builder()
+						.setTransport(TRANSPORT)
+						.setJsonFactory(JSON_FACTORY)
+						.setServiceAccountId("711533592980-godahdtbk3o91r83lhbbcf4hgigr39e7@developer.gserviceaccount.com")
+						.setServiceAccountScopes(Collections.singleton(BigqueryScopes.BIGQUERY))
+						.setServiceAccountPrivateKeyFromP12File(new File(path))
+						.build();
+			}
 		}
 
 		@Provides

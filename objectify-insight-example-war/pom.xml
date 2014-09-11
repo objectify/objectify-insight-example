@@ -120,6 +120,17 @@
 					</webResources>
 				</configuration>
 			</plugin>
+
+			<!-- Without this, maven mangles p12 files. Thanks a fucking lot. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<nonFilteredFileExtensions>
+						<nonFilteredFileExtension>p12</nonFilteredFileExtension>
+					</nonFilteredFileExtensions>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
