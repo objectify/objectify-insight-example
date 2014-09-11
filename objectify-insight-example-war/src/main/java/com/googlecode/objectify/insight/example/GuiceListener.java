@@ -63,22 +63,6 @@ public class GuiceListener extends GuiceServletContextListener {
 					.build();
 		}
 
-//		@Provides
-//		public GoogleClientSecrets googleClientSecrets() throws IOException {
-//			return GoogleClientSecrets.load(
-//					new JacksonFactory(),
-//					new InputStreamReader(this.getClass().getResourceAsStream(CLIENTSECRETS_LOCATION)));
-//		}
-//
-//		@Provides
-//		public AppIdentityCredential credential(GoogleClientSecrets googleClientSecrets) {
-//			return new GoogleCredential.Builder()
-//					.setTransport(TRANSPORT)
-//					.setJsonFactory(JSON_FACTORY)
-//					.setClientSecrets(googleClientSecrets)
-//					.build();
-//		}
-
 		@Provides
 		public HttpRequestInitializer credential(ServletContext ctx) throws GeneralSecurityException, IOException {
 			if (SystemProperty.environment.value() == Value.Production) {
@@ -111,8 +95,8 @@ public class GuiceListener extends GuiceServletContextListener {
 
 			serve("/go").with(GoServlet.class);
 
-			serve("/tableMaker").with(GuiceTableMakerServlet.class);
-			serve("/puller").with(GuicePullerServlet.class);
+			serve("/private/tableMaker").with(GuiceTableMakerServlet.class);
+			serve("/private/puller").with(GuicePullerServlet.class);
 		}
 	}
 

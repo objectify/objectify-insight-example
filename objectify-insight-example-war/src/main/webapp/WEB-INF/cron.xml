@@ -1,0 +1,12 @@
+<cronentries>
+	<cron>
+		<url>/private/tableMaker</url>
+		<description>Make sure we have enough tables for a week</description>
+		<schedule>every 8 hours</schedule>
+	</cron>
+	<cron>
+		<url>/private/puller</url>
+		<description>Move all data to BQ</description>
+		<schedule>every 1 minutes</schedule>
+	</cron>
+</cronentries>

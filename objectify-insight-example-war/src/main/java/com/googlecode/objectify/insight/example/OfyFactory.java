@@ -5,7 +5,7 @@ import com.google.appengine.api.datastore.DatastoreServiceConfig;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.insight.InsightAsyncDatastoreService;
-import com.googlecode.objectify.insight.InsightCollector;
+import com.googlecode.objectify.insight.Recorder;
 import lombok.extern.slf4j.Slf4j;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -18,19 +18,21 @@ import javax.inject.Singleton;
 public class OfyFactory extends ObjectifyFactory {
 
 	/** */
-	private final InsightCollector collector;
+	private final Recorder recorder;
 
 	/** */
 	@Inject
-	public OfyFactory(InsightCollector collector) {
+	public OfyFactory(Recorder recorder) {
 		// Important to replace the static singleton instance!
 		ObjectifyService.setFactory(this);
 
-		this.collector = collector;
+		this.recorder = recorder;
 
-		collector.setAgeThresholdMillis(2000);
+		recorder.getCollector().setAgeThresholdMillis(2000);
 
-		register(Thing.class);
+		register(Thing1.class);
+		register(Thing2.class);
+		register(Thing3.class);
 	}
 
 	/** */
@@ -38,8 +40,6 @@ public class OfyFactory extends ObjectifyFactory {
 	protected AsyncDatastoreService createRawAsyncDatastoreService(DatastoreServiceConfig cfg) {
 		AsyncDatastoreService raw = super.createRawAsyncDatastoreService(cfg);
 
-		log.debug("Creating insight async datastore");
-
-		return new InsightAsyncDatastoreService(raw, collector);
+		return new InsightAsyncDatastoreService(raw, recorder);
 	}
 }
