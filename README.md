@@ -1,4 +1,5 @@
-appengine-skeleton
-=============================
+# Example of Objectify Insight
 
-This is a generated application from the appengine-skeleton archetype.
+This is a sample application for the Objectify Insight library:
+
+https://github.com/stickfigure/objectify-insight
