@@ -94,6 +94,7 @@ public class GuiceListener extends GuiceServletContextListener {
 			filter("/*").through(ObjectifyFilter.class);
 
 			serve("/go").with(GoServlet.class);
+			serve("/fill").with(FillServlet.class);
 
 			serve("/private/tableMaker").with(GuiceTableMakerServlet.class);
 			serve("/private/puller").with(GuicePullerServlet.class);

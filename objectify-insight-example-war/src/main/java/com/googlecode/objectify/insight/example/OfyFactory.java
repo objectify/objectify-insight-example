@@ -40,6 +40,7 @@ public class OfyFactory extends ObjectifyFactory {
 	protected AsyncDatastoreService createRawAsyncDatastoreService(DatastoreServiceConfig cfg) {
 		AsyncDatastoreService raw = super.createRawAsyncDatastoreService(cfg);
 
+		//return raw;
 		return new InsightAsyncDatastoreService(raw, recorder);
 	}
 }

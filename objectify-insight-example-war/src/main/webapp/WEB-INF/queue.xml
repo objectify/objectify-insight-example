@@ -3,4 +3,11 @@
 		<name>insight</name>
 		<mode>pull</mode>
 	</queue>
+
+	<queue>
+		<name>go</name>
+		<rate>500/s</rate>
+		<bucket-size>100</bucket-size>
+		<max-concurrent-requests>500</max-concurrent-requests>
+	</queue>
 </queue-entries>
